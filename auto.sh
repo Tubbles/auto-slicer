@@ -8,7 +8,7 @@ my_dir="$(dirname "$(realpath "${0}")")"
 while :; do
     inputs="$(find "${my_dir}/" -type f -name '*.stl')"
     for input in ${inputs}; do
-        input="$(realpath --relative-to="${my_dir}" "${input}")"
+        input_relative="$(realpath --relative-to="${my_dir}" "${input}")"
 
         # Check if output file already exists
         if [[ -f "${input/%.stl/}"*.gcode ]]; then
@@ -22,11 +22,11 @@ while :; do
         flags+=(--load "${printer_dir}/${printer}")
 
         # Fetch print
-        layer_height="$(echo "${input}" | awk -F'/' '{print $1}')"
+        layer_height="$(echo "${input_relative}" | awk -F'/' '{print $1}')"
         flags+=(--load "${print_dir}/${layer_heights["${layer_height}"]}")
 
         # Fetch material
-        material="$(echo "${input}" | awk -F'/' '{print $2}')"
+        material="$(echo "${input_relative}" | awk -F'/' '{print $2}')"
         flags+=(--load "${filament_dir}/${materials["${material}"]}")
 
         # Do the slicing
