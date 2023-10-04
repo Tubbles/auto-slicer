@@ -11,7 +11,7 @@ while :; do
         input_relative="$(realpath --relative-to="${my_dir}" "${input}")"
 
         # Check if output file already exists
-        if [[ -f "${input/%.stl/}"*.gcode ]]; then
+        if compgen -G "${input/%.stl/}"*.gcode &>/dev/null; then
             continue
         fi
 
@@ -32,7 +32,7 @@ while :; do
         # Do the slicing
         (
             set -x
-            "${slicer}" --export-gcode "${flags[@]}" "${input}" && while test ! -f "${input/%.stl/}"*.gcode; do sleep 1; done
+            "${slicer}" --export-gcode "${flags[@]}" "${input}" && while ! compgen -G "${input/%.stl/}"*.gcode &>/dev/null; do sleep 1; done
         )
 
         # Upload to printer
