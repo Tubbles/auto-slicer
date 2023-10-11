@@ -18,6 +18,7 @@ declare -A materials=(
 declare -A layer_heights=(
     ["200um"]="0.20mm NORMAL @CREALITY - Copy - SCRIPT.ini"
     ["280um"]="0.28mm SUPERDRAFT @CREALITY - Copy.ini"
+    ["vase"]="VASE @CREALITY - Copy - SCRIPT.ini"
 )
 
 slicer="com.prusa3d.PrusaSlicer"
