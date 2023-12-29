@@ -5,12 +5,19 @@ set -e
 
 my_dir="$(dirname "$(realpath "${0}")")"
 
-inputs="$(find "${my_dir}/" -type f -name '*.stl')"
-for input in ${inputs}; do
+gcode_does_not_exist () {
+    stem="$(basename -s ".stl" "${1}")"
+    find "$(dirname "${1}")" -type f -regextype posix-extended -regex ".*/${stem}_([0-9]+h|)[0-9]+m_[0-9]+C_[A-Za-z0-9]+.gcode" | grep -q .
+    echo $?
+}
+
+shopt -s globstar nullglob
+for input in **/*.stl; do
+    input="$(realpath "${input}")"
     input_relative="$(realpath --relative-to="${my_dir}" "${input}")"
 
     # Check if output file already exists
-    if compgen -G "${input/%.stl/}"*.gcode &>/dev/null; then
+    if [[ "$(gcode_does_not_exist "${input}")" == "0" ]]; then
         continue
     fi
 
